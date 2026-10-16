@@ -1,10 +1,10 @@
-# Seeker-Based Autonomous Intercept Guidance and HIL Validation
+**# Seeker-Based Autonomous Intercept Guidance and HIL Validation**
 
 C++/MATLAB/Python project for studying planar autonomous guidance under noisy seeker measurements, measurement latency, target maneuvers, actuator limits, and real-time execution constraints.
 
 The project compares a proportional-navigation (PN) baseline against constrained receding-horizon predictive guidance. Both controllers use the same EKF-estimated relative state. neither receives target truth.
 
-## Architecture
+**## Architecture**
 
 ```text
 target / interceptor truth
@@ -37,7 +37,7 @@ results/                      processed results and figures
 
 For the mathematical formulation, see [`theorynote.md`](theorynote.md).
 
-## Build and test
+**## Build and test**
 
 From the repository root in Ubuntu/WSL:
 
@@ -47,7 +47,7 @@ cmake --build --preset release
 ctest --test-dir build/release --output-on-failure
 ```
 
-## Monte Carlo validation
+**## Monte Carlo validation**
 
 Run the C++ benchmark:
 
@@ -72,7 +72,7 @@ source ~/.venvs/seeker-guidance/bin/activate
 python python/analyze_results.py
 ```
 
-### Representative robustness result
+**### Representative robustness result**
 
 One 5,000-run robustness batch with increased sensor noise, latency, dropout, and target maneuver uncertainty produced:
 
@@ -95,11 +95,11 @@ max:    477.8 us
 
 These results represent one randomized robustness study.
 
-## MATLAB / Simulink
+**## MATLAB / Simulink**
 
 The Simulink model uses the same C++ guidance stack through a compiled S-function.
 
-### First-time setup
+**### First-time setup**
 
 Configure a supported MATLAB C++ compiler:
 
@@ -107,7 +107,7 @@ Configure a supported MATLAB C++ compiler:
 mex -setup C++
 ```
 
-### Run the complete demo
+**### Run the complete demo**
 
 From the repository `matlab/` directory:
 
@@ -138,31 +138,35 @@ build_models
 run_demo
 ```
 
-## Guidance methods
+**## Guidance methods**
 
-### Proportional navigation
+**### Proportional navigation**
 
 PN uses
 
-```text
-a_cmd = N * Vc * lambda_dot
-```
+$$
+a_{\mathrm{cmd}} = N V_c \dot{\lambda}
+$$
 
-where `Vc` is closing velocity and `lambda_dot` is line-of-sight angular rate.
+where $V_c$ is closing velocity and $\dot{\lambda}$ is line-of-sight angular rate.
 
-### Predictive guidance
+**### Predictive guidance**
 
 Predictive guidance solves a short receding-horizon problem using a cost of the form
 
-```text
-J = wz * ZEM^2
-  + wu * sum(u_k^2)
-  + wdu * sum((u_k - u_{k-1})^2)
-```
+$$
+J
+=
+w_z\,\mathrm{ZEM}^2
++
+w_u \sum_k u_k^2
++
+w_{\Delta u} \sum_k (u_k-u_{k-1})^2
+$$
 
 subject to acceleration, slew-rate, and actuator constraints. Only the first optimized command is applied before the problem is solved again at the next guidance update.
 
-## HIL interface
+**## HIL interface**
 
 A compact UDP HIL controller is also included:
 
@@ -172,7 +176,7 @@ A compact UDP HIL controller is also included:
 
 The HIL path uses the same C++ guidance stack as the standalone benchmark and Simulink integration.
 
-## Scope and limitations
+**## Scope and limitations**
 
 This is a simulation and controls-validation project. The current model uses:
 
